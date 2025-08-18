@@ -12,7 +12,8 @@
 ## Instructions
 + `$ ocamlc main.ml -o main`
 + `$ ./main`
-+ Copy output and paste into the first empty cell in Desmos Graphics Calculate: <https://www.desmos.com/calculator>
++ Copy output and paste into the first empty cell in Desmos Graphing Calculator:
+  <https://www.desmos.com/calculator>
 + Hold press on the circle on the left of Cell 3; in the menu that opens up, enable 'Lines'
 + Enter Cell 6 and simply hit left arrow key once
 + Enter Cell 9 and simply hit left arrow key once
