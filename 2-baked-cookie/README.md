@@ -13,4 +13,4 @@
 + Make sure **ImageMagick** is installed
 + `$ opam install .`
 + `$ dune build`
-+ `$ dune exec main -- poster.webp poster-unbaked.webp`
++ `$ ./_build/default/main.exe poster.webp poster-unbaked.webp 4`
