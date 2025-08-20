@@ -10,6 +10,7 @@
 **Author:** Nigel Withrow <nigelwithrow78@gmail.com>
 
 ## Instructions
++ Make sure **ImageMagick** is installed
 + `$ opam install .`
 + `$ dune build`
 + `$ dune exec main -- poster.webp poster-unbaked.webp`
