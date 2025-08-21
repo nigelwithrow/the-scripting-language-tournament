@@ -1,0 +1,9 @@
+(executable
+ (public_name main)
+ (name main2)
+ (libraries ocamlgraph))
+
+; (executable
+;  (public_name main-comments)
+;  (name main_comments)
+;  (libraries ocamlgraph))

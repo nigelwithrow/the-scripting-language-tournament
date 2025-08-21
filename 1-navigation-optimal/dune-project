@@ -1,6 +1,6 @@
 (lang dune 3.19)
 
-(name baked-cookie)
+(name navigation-optimal)
 
 (generate_opam_files true)
 
@@ -12,9 +12,8 @@
 (maintainers "Nigel Withrow <nigelwithrow78@gmail.com>")
 
 (package
- (name baked-cookie)
- (depends ocaml bimage bimage-unix)
- (tags
-  ("add topics" "to describe" your project)))
+ (name navigation-optimal)
+ (depends ocaml ocamlgraph)
+ (tags ()))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
