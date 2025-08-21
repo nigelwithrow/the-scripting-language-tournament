@@ -119,7 +119,7 @@ let solve input : output =
           (* 2. Try to jump to bottom or the top of the farthest rectangle side*)
           let goals =
             let open List in
-            xs
+            (next_rect, side) :: xs
             |> mapi (fun rect_id (rect, side) ->
                    let (u, v), (u', v') =
                      match side with Left -> left rect | Right -> right rect
@@ -138,14 +138,14 @@ let solve input : output =
               |> map (fun (goal, (rect_id, rect_side_vert)) ->
                      List.to_seq rect_sides
                      (* the only obstacles in the path to a side of this
-                      destination-rectangle are the ones that come before it
-                      (including the immediately next) and, in the case the goal
-                      is the top of a rectangle, the destination-rectangle itself
-                      as well *)
+                        destination-rectangle are the ones that come before it
+                        (including the immediately next) and, in the case the
+                        goal is the top of a rectangle, the destination-rectangle
+                        itself as well *)
                      |> take
                           (match rect_side_vert with
-                          | Down -> rect_id + 1
-                          | Up -> rect_id + 2)
+                          | Down -> rect_id
+                          | Up -> rect_id + 1)
                      (* Ensure that the line to the point on the side of the
                       destination-rectangle doesn't intersect with any rectangles
                       in between *)
