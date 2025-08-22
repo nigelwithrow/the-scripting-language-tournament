@@ -1,161 +1,127 @@
 type rect = { x : int; y : int; width : int; height : int }
-
-let left { x; y; width; height } = ((x, y), (x, y + height))
-let right { x; y; width; height } = ((x + width, y), (x + width, y + height))
-
 type input = { goal : int; rects : rect list }
 type coord = { x : int; y : int }
 type output = { path : coord list; distance : float }
-type side_to_walk = Left | Right
-type side_vertical = Up | Down
 
-let intersect_line_rect (x, y) (x', y') (rect : rect) =
+let origin = { x = 0; y = 0 }
+
+let calc_dist { x; y } { x = x'; y = y' } =
   let open Float in
-  let mx_plus_c_of_2_point (x, y) (x', y') =
-    let m = (div @@ sub (of_int y') (of_int y)) @@ sub (of_int x') (of_int x) in
-    let c = sub (of_int y) (mul (of_int x) m) in
-    (m, c)
-  in
-  let rect_base_y = rect.y in
-  let rect_top_y = rect.y + rect.height in
-  let m, c = mx_plus_c_of_2_point (x, y) (x', y') in
-  let line_x_min, line_x_max =
-    if is_finite m then
-      min_max
-        (div (sub (of_int rect_base_y) c) m)
-        (div (sub (of_int rect_top_y) c) m)
-    else (of_int x, of_int x)
-  in
-  not (line_x_max < of_int rect.x || line_x_min > of_int (rect.x + rect.width))
+  let x, x', y, y' = (of_int x, of_int x', of_int y, of_int y') in
+  sqrt (add (pow (sub y' y) 2.) (pow (sub x' x) 2.))
 
-let solve input : output =
-  let shortest_dist = ref None in
-  let shortest_path = ref None in
-  let rec calc_dist = function
-    | [] | [ _ ] -> 0.
-    | (x, y) :: ((x', y') as new_head) :: xs ->
-        let open Float in
-        let x, x', y, y' = (of_int x, of_int x', of_int y, of_int y') in
-        sqrt (add (pow (sub y' y) 2.) (pow (sub x' x) 2.))
-        |> add (calc_dist @@ (new_head :: xs))
-  in
-  let rec walk_along fast_path (x, y) (x', y') rect_sides =
-    match rect_sides with
-    | _ when x = x' && y = y' -> Some []
-    | [] -> Some [ (x', y') ]
-    | (next_rect, side) :: xs -> (
-        let can_jump_to_goal =
-          let open Seq in
-          fold_left
-            (fun no_intersects this_intersects ->
-              no_intersects && not this_intersects)
-            true
-            (map
-               (fun (rect, _) -> intersect_line_rect (x, y) (x', y') rect)
-               (List.to_seq rect_sides))
-        in
-        if can_jump_to_goal then Some [ (x', y') ]
-        else
-          let goals =
-            let open List in
-            xs
-            |> mapi (fun rect_id (rect, side) ->
-                   let (u, v), (u', v') =
-                     match side with Left -> left rect | Right -> right rect
-                   in
-                   [ ((u', v'), (rect_id, Up)); ((u, v), (rect_id, Down)) ])
-            |> rev |> flatten
-          in
-          let rect_to_jump =
-            let open Seq in
-            if not fast_path then None
-            else
-              List.to_seq goals
-              |> map (fun (goal, (rect_id, rect_side_vert)) ->
-                     List.to_seq rect_sides
-                     |> take
-                          (match rect_side_vert with
-                          | Down -> rect_id + 1
-                          | Up -> rect_id + 2)
-                     |> map (fun (rect, _) ->
-                            intersect_line_rect (x, y) goal rect)
-                     |> fold_left
-                          (fun no_intersects this_intersects ->
-                            no_intersects && not this_intersects)
-                          true)
-              |> find_mapi (fun id no_intersects ->
-                     if no_intersects then Some id else None)
-          in
-          match rect_to_jump with
-          | Some rect_side ->
-              let open List in
-              let side, (rect_id, rect_side_vert) = nth goals rect_side in
-              let remaining_rects =
-                drop
-                  (match rect_side_vert with
-                  | Down -> rect_id
-                  | Up -> rect_id + 1)
-                  xs
-              in
-              walk_along fast_path side (x', y') remaining_rects
-              |> Option.map (fun l -> side :: l)
-          | None ->
-              let (u, v), (u', v') =
-                match side with
-                | Left -> left next_rect
-                | Right -> right next_rect
-              in
-              if u = u' && v = v' then
-                walk_along fast_path (u', v') (x', y') xs
-                |> Option.map (fun l -> (u', v') :: l)
-              else if (u != u' && v = v') || (u = v' && v > v') then None
-              else
-                walk_along fast_path (u', v') (x', y') xs
-                |> Option.map (( @ ) [ (u, v); (u', v') ]))
-  in
-  let rec combinations = function
-    | [] -> []
-    | [ rect ] -> [ [ (rect, Left) ]; [ (rect, Right) ] ]
-    | rect :: xs ->
-        let xs_combinations = combinations xs in
-        List.map (( @ ) [ (rect, Left) ]) xs_combinations
-        @ List.map (( @ ) [ (rect, Right) ]) xs_combinations
-  in
-  let update_shortest_path new_path =
-    let open Option in
-    let new_dist = calc_dist new_path in
-    if
-      !shortest_dist |> is_none
-      || bind !shortest_dist (fun old_dist ->
-             if new_dist < old_dist then Some () else None)
-         |> is_some
-    then (
-      shortest_dist := Some new_dist;
-      shortest_path := Some new_path)
-  in
-  let rects =
-    List.sort (fun ({ y; _ } : rect) { y = y'; _ } -> y - y') input.rects
-  in
+module Graph' = struct
+  open Graph
+
+  module G = struct
+    module Coord = struct
+      type t = coord
+
+      let compare = Stdlib.compare
+      let equal = ( = )
+      let hash = Hashtbl.hash
+    end
+
+    module Float = struct
+      type t = float
+
+      let compare = Stdlib.compare
+      let default = 0.
+    end
+
+    include Imperative.Graph.ConcreteLabeled (Coord) (Float)
+  end
+
+  module Dijkstra =
+    Path.Dijkstra
+      (G)
+      (struct
+        type edge = G.E.t
+        type t = float
+
+        let weight (a, _, b) = calc_dist a b
+        let zero = 0.
+        let add = Float.add
+        let compare = Float.compare
+      end)
+
+  let create = G.create
+  let add_vertex = G.add_vertex
+  let add_edge = G.add_edge
+  let shortest_path = Dijkstra.shortest_path
+end
+
+let intersect_line_rect { x; y } { x = x'; y = y' } (rect : rect) =
+  if
+    max x x' <= min rect.x (rect.x + rect.width)
+    || min x x' >= max rect.x (rect.x + rect.width)
+    || max y y' <= min rect.y (rect.y + rect.height)
+    || min y y' >= max rect.y (rect.y + rect.height)
+  then false
+  else
+    let open Float in
+    let mx_plus_c_of_2_point (x, y) (x', y') =
+      let m =
+        (div @@ sub (of_int y') (of_int y)) @@ sub (of_int x') (of_int x)
+      in
+      let c = sub (of_int y) (mul (of_int x) m) in
+      (m, c)
+    in
+    let rect_base_y = rect.y in
+    let rect_top_y = rect.y + rect.height in
+    let m, c = mx_plus_c_of_2_point (x, y) (x', y') in
+    if m = 0. then y >= rect_base_y && y <= rect_top_y
+    else if is_infinite m then x > rect.x && x < rect.x + rect.width
+    else
+      let line_x_base = div (sub (of_int rect_base_y) c) m in
+      let line_x_top = div (sub (of_int rect_top_y) c) m in
+      (line_x_base > of_int rect.x && line_x_base < of_int (rect.x + rect.width))
+      || line_x_top > of_int rect.x
+         && line_x_top < of_int (rect.x + rect.width)
+      || line_x_base <= of_int rect.x
+         && line_x_top >= of_int (rect.x + rect.width)
+      || line_x_base >= of_int (rect.x + rect.width)
+         && line_x_top <= of_int rect.x
+
+let solve (input : input) : output =
   let open List in
-  combinations rects
-  |> map (fun combination ->
-         let open Option in
-         List.append
-           (to_list @@ walk_along true (0, 0) (0, input.goal) combination)
-           (to_list @@ walk_along false (0, 0) (0, input.goal) combination))
-  |> flatten
-  |> iter (fun path ->
-         let path = (0, 0) :: path in
-         update_shortest_path path);
+  let open Graph' in
+  let goal = { x = 0; y = input.goal } in
+  let rect_corners =
+    input.rects
+    |> map (fun { x; y; width; height } ->
+           [
+             { x; y };
+             { x; y = y + height };
+             { x = x + width; y };
+             { x = x + width; y = y + height };
+           ])
+    |> flatten
+  in
+  let vertices = [ origin; goal ] @ rect_corners in
+  let graph = create () in
+  vertices |> iter (add_vertex graph);
+  for i = 0 to length vertices - 1 do
+    let a = nth vertices i in
+    for j = i + 1 to length vertices - 1 do
+      let b = nth vertices j in
+      let valid_edge =
+        input.rects
+        |> fold_left
+             (fun no_intersects rect ->
+               if no_intersects then not (intersect_line_rect a b rect)
+               else false)
+             true
+      in
+      if valid_edge then add_edge graph a b
+    done
+  done;
+  let path, _ = shortest_path graph origin goal in
   {
     path =
-      (match !shortest_path with
-      | Some path -> path |> map (fun (x, y) -> { x; y })
-      | None -> raise Exit);
+      origin :: (path |> map (fun (_vertex_a, _edge_id, vertex_b) -> vertex_b));
     distance =
-      (match !shortest_dist with
-      | Some distance -> distance
-      | None -> raise Exit);
+      path |> fold_left (fun sum (a, _, b) -> Float.add sum @@ calc_dist a b) 0.;
   }
 
 let generate_desmos input =
@@ -192,6 +158,6 @@ generate_desmos
     rects =
       [
         { x = -18; y = 31; width = 22; height = 8 };
-        { x = -6; y = 10; width = 22; height = 8 };
+        { x = -6; y = 10; width = 102; height = 8 };
       ];
   }

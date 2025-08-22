@@ -1,14 +1,16 @@
 (*
   # The Scripting Language Tournament by InfiniteCoder01
   Challenge 1 - Navigation Optimal
-  Date: 16th August 2025
+  Date: 22nd August 2025
 
   Entry:  OCaml
   Author: Nigel Withrow <nigelwithrow78@gmail.com>
 
   Instructions:
-  + `$ ocamlc main.ml -o main`
-  + `$ ./main`
+  + `$ cd 1-navigation-optimal`
+  + `$ opam install .`
+  + `$ dune build`
+  + `$ ./_build/default/main.exe`
   + Copy output and paste into the first empty cell in Desmos Graphing
     Calculator: https://www.desmos.com/calculator
   + Hold press on the circle on the left of Cell 3; in the menu that opens up,
@@ -17,249 +19,160 @@
   + Enter Cell 9 and simply hit left arrow key once
 *)
 
-(* Input data-types *)
 type rect = { x : int; y : int; width : int; height : int }
-
-let left { x; y; width; height } = ((x, y), (x, y + height))
-let right { x; y; width; height } = ((x + width, y), (x + width, y + height))
-
 type input = { goal : int; rects : rect list }
-
-(* Output data-types *)
 type coord = { x : int; y : int }
 type output = { path : coord list; distance : float }
-type side_to_walk = Left | Right
-type side_vertical = Up | Down
+
+let origin = { x = 0; y = 0 }
+
+(* Distance between two cartesian points *)
+let calc_dist { x; y } { x = x'; y = y' } =
+  let open Float in
+  let x, x', y, y' = (of_int x, of_int x', of_int y, of_int y') in
+  sqrt (add (pow (sub y' y) 2.) (pow (sub x' x) 2.))
+
+module Graph' = struct
+  (* library `ocamlgraph` *)
+  open Graph
+
+  module G = struct
+    module Coord = struct
+      (* Vertices are coordinates *)
+      type t = coord
+
+      let compare = Stdlib.compare
+      let equal = ( = )
+      let hash = Hashtbl.hash
+    end
+
+    module Float = struct
+      (* Weight of the edges are floats (distance between coordinates) *)
+      type t = float
+
+      let compare = Stdlib.compare
+      let default = 0.
+    end
+
+    include Imperative.Graph.ConcreteLabeled (Coord) (Float)
+  end
+
+  module Dijkstra =
+    Path.Dijkstra
+      (G)
+      (struct
+        type edge = G.E.t
+        type t = float
+
+        (* Calculate weight of an edge *)
+        let weight (a, _, b) = calc_dist a b
+        let zero = 0.
+        let add = Float.add
+        let compare = Float.compare
+      end)
+
+  let create = G.create
+  let add_vertex = G.add_vertex
+  let add_edge = G.add_edge
+  let shortest_path = Dijkstra.shortest_path
+end
 
 (* whether line between two points (x, y) & (x', y') intersects with rectange
    `rect` *)
-let intersect_line_rect (x, y) (x', y') (rect : rect) =
-  let open Float in
-  (* From `(x,y), (x',y')` line equation to `y = mx + c` equation *)
-  let mx_plus_c_of_2_point (x, y) (x', y') =
-    let m = (div @@ sub (of_int y') (of_int y)) @@ sub (of_int x') (of_int x) in
-    let c = sub (of_int y) (mul (of_int x) m) in
-    (m, c)
-  in
-
-  let rect_base_y = rect.y in
-  let rect_top_y = rect.y + rect.height in
-  let m, c = mx_plus_c_of_2_point (x, y) (x', y') in
-  (* mantissa of the line at the level of the base and top of the rectangle
-     respectively *)
-  let line_x_min, line_x_max =
-    if is_finite m then
-      min_max
-        (div (sub (of_int rect_base_y) c) m)
-        (div (sub (of_int rect_top_y) c) m)
+let intersect_line_rect { x; y } { x = x'; y = y' } (rect : rect) =
+  if
+    (* if line's x-bounds are completely out of rectangle's x-bounds, they can't
+       intersect *)
+    max x x' <= min rect.x (rect.x + rect.width)
+    || min x x' >= max rect.x (rect.x + rect.width)
+    (* if line's y-bounds are completely out of rectangle's y-bounds, they can't
+       intersect *)
+    || max y y' <= min rect.y (rect.y + rect.height)
+    || min y y' >= max rect.y (rect.y + rect.height)
+  then false
+  else
+    let open Float in
+    (* From `(x,y), (x',y')` line equation to `y = mx + c` equation *)
+    let mx_plus_c_of_2_point (x, y) (x', y') =
+      let m =
+        (div @@ sub (of_int y') (of_int y)) @@ sub (of_int x') (of_int x)
+      in
+      let c = sub (of_int y) (mul (of_int x) m) in
+      (m, c)
+    in
+    let rect_base_y = rect.y in
+    let rect_top_y = rect.y + rect.height in
+    let m, c = mx_plus_c_of_2_point (x, y) (x', y') in
+    if m = 0. then
+      (* line is paralell to x-axis *)
+      y >= rect_base_y && y <= rect_top_y
+    else if is_infinite m then
+      (* line is paralell to y-axis *)
+      x > rect.x && x < rect.x + rect.width
     else
-      (* line is parallel to y-axis *)
-      (of_int x, of_int x)
-  in
-  not (line_x_max < of_int rect.x || line_x_min > of_int (rect.x + rect.width))
+      (* mantissa of the line at the level of the base and top of the rectangle
+       respectively *)
+      let line_x_base = div (sub (of_int rect_base_y) c) m in
+      let line_x_top = div (sub (of_int rect_top_y) c) m in
+      (* line passes through rectangle's base edge *)
+      (line_x_base > of_int rect.x && line_x_base < of_int (rect.x + rect.width))
+      (* line passes through rectangle's top edge *)
+      || line_x_top > of_int rect.x
+         && line_x_top < of_int (rect.x + rect.width)
+      (* line entered rectangle at slant from bottom left to top right*)
+      || line_x_base <= of_int rect.x
+         && line_x_top >= of_int (rect.x + rect.width)
+      (* line entered rectangle at slant from bottom right to top left*)
+      || line_x_base >= of_int (rect.x + rect.width)
+         && line_x_top <= of_int rect.x
 
 (*
   NOTE: Solution
 *)
-let solve input : output =
-  (* `None` if uninitialized *)
-  let shortest_dist = ref None in
-  let shortest_path = ref None in
-
-  (* Calculates the distance of the path represented by the given coordinates *)
-  let rec calc_dist = function
-    | [] | [ _ ] -> 0.
-    | (x, y) :: ((x', y') as new_head) :: xs ->
-        let open Float in
-        let x, x', y, y' = (of_int x, of_int x', of_int y, of_int y') in
-        sqrt (add (pow (sub y' y) 2.) (pow (sub x' x) 2.))
-        |> add (calc_dist @@ (new_head :: xs))
-  in
-
-  (*
-    Evaluates the path to walk from `(x,y)` to `(x',y')` along each of the
-    provided set of rectangle-sides, jumping directly to the goal if possible
-
-    NOTE: if `fast_path` is true, it also tries jumping directly to a rectangle
-    after the immediate next rectangle at any time, given there are no obstacles
-    NOTE: Returns None when the path is invalid, i.e. a jump is required that
-    passes through a rectangle
-    NOTE: `lines` is assumed to be sorted in ascending order of `y`
-    NOTE: The provided path excludes (x, y) itself
-  *)
-  let rec walk_along fast_path (x, y) (x', y') rect_sides =
-    match rect_sides with
-    (* We are already at the goal, no extra jumps *)
-    | _ when x = x' && y = y' -> Some []
-    (* No more rectangles ahead, single jump to the goal *)
-    | [] -> Some [ (x', y') ]
-    (*
-      Rectangles ahead:
-      1. Try to directly jump to the goal
-      2. If 1 not possible & fast_path enabled, try to jump to bottom or the top
-         of the farthest rectangle side
-      3. If fast_path enabled & 2 not possible or fast_path disabled & 1 not
-         possible, walk to immediate next rectangle, walk along it, and then try
-         all over again
-    *)
-    | (next_rect, side) :: xs -> (
-        (* 1. Try to directly jump to the goal *)
-        let can_jump_to_goal =
-          let open Seq in
-          fold_left
-            (fun no_intersects this_intersects ->
-              no_intersects && not this_intersects)
-            true
-            (map
-               (fun (rect, _) -> intersect_line_rect (x, y) (x', y') rect)
-               (List.to_seq rect_sides))
-        in
-        if can_jump_to_goal then Some [ (x', y') ]
-        else
-          (* 2. Try to jump to bottom or the top of the farthest rectangle side*)
-          let goals =
-            let open List in
-            (next_rect, side) :: xs
-            |> mapi (fun rect_id (rect, side) ->
-                   let (u, v), (u', v') =
-                     match side with Left -> left rect | Right -> right rect
-                   in
-                   [ ((u', v'), (rect_id, Up)); ((u, v), (rect_id, Down)) ])
-            (* best to worst == farthest to nearest, i.e. reverse *)
-            |> rev
-            |> flatten
-          in
-          let rect_to_jump =
-            let open Seq in
-            (* If fast_path is disabled, don't try this *)
-            if not fast_path then None
-            else
-              List.to_seq goals
-              |> map (fun (goal, (rect_id, rect_side_vert)) ->
-                     List.to_seq rect_sides
-                     (* the only obstacles in the path to a side of this
-                        destination-rectangle are the ones that come before it
-                        (including the immediately next) and, in the case the
-                        goal is the top of a rectangle, the destination-rectangle
-                        itself as well *)
-                     |> take
-                          (match rect_side_vert with
-                          | Down -> rect_id
-                          | Up -> rect_id + 1)
-                     (* Ensure that the line to the point on the side of the
-                      destination-rectangle doesn't intersect with any rectangles
-                      in between *)
-                     |> map (fun (rect, _) ->
-                            intersect_line_rect (x, y) goal rect)
-                     |> fold_left
-                          (fun no_intersects this_intersects ->
-                            no_intersects && not this_intersects)
-                          true)
-              (* Get the farthest destination-rectangle that can be jumped to *)
-              |> find_mapi (fun id no_intersects ->
-                     if no_intersects then Some id else None)
-          in
-          match rect_to_jump with
-          (* Jump to the found destination-rectangle *)
-          | Some rect_side ->
-              let open List in
-              let side, (rect_id, rect_side_vert) = nth goals rect_side in
-              let remaining_rects =
-                drop
-                  (match rect_side_vert with
-                  | Down -> rect_id
-                  | Up -> rect_id + 1)
-                  xs
-              in
-              walk_along fast_path side (x', y') remaining_rects
-              |> Option.map (fun l -> side :: l)
-          (* No jumps available, so
-             3. Walk to immediate next rectangle, walk along it, and then try all
-                over again
-          *)
-          | None ->
-              let (u, v), (u', v') =
-                match side with
-                | Left -> left next_rect
-                | Right -> right next_rect
-              in
-              if u = u' && v = v' then
-                walk_along fast_path (u', v') (x', y') xs
-                |> Option.map (fun l -> (u', v') :: l)
-                (* Invalid path having jump through a rectangle, stop walking *)
-              else if (u != u' && v = v') || (u = v' && v > v') then None
-              else
-                walk_along fast_path (u', v') (x', y') xs
-                |> Option.map (( @ ) [ (u, v); (u', v') ]))
-  in
-
-  (*
-    Gets all combinations selecting the left or right sides of a rectangle
-
-    EXAMPLE: `[(0,0,10,10); (-10,10,10,10)]` becomes `[
-      [left(0,0,10,10), left(-10,10,10,10)];
-      [left(0,0,10,10), right(-10,10,10,10)];
-      [right(0,0,10,10), left(-10,10,10,10)];
-      [right(0,0,10,10), right(-10,10,10,10)];
-    ]`
-  *)
-  let rec combinations = function
-    | [] -> []
-    (* The last rectangle *)
-    | [ rect ] -> [ [ (rect, Left) ]; [ (rect, Right) ] ]
-    | rect :: xs ->
-        let xs_combinations = combinations xs in
-        (* All combinations having the left line of this rectangle *)
-        List.map (( @ ) [ (rect, Left) ]) xs_combinations
-        @
-        (* All combinations having the right line of this rectangle *)
-        List.map (( @ ) [ (rect, Right) ]) xs_combinations
-  in
-
-  (*
-    Update the shortest-distance refcell with a newly encountered path distance
-  *)
-  let update_shortest_path new_path =
-    let open Option in
-    let new_dist = calc_dist new_path in
-    if
-      (* First distance encountered *)
-      !shortest_dist |> is_none
-      (* New shortest distance *)
-      || bind !shortest_dist (fun old_dist ->
-             if new_dist < old_dist then Some () else None)
-         |> is_some
-    then (
-      shortest_dist := Some new_dist;
-      shortest_path := Some new_path)
-  in
-
-  (* NOTE: evaluation begins here *)
-
-  (* First Sort rectangles by ascending order of `y` *)
-  let rects =
-    List.sort (fun ({ y; _ } : rect) { y = y'; _ } -> y - y') input.rects
-  in
+let solve (input : input) : output =
   let open List in
-  combinations rects
-  |> map (fun combination ->
-         let open Option in
-         List.append
-           (to_list @@ walk_along true (0, 0) (0, input.goal) combination)
-           (to_list @@ walk_along false (0, 0) (0, input.goal) combination))
-  |> flatten
-  |> iter (fun path ->
-         let path = (0, 0) :: path in
-         update_shortest_path path);
+  let open Graph' in
+  let goal = { x = 0; y = input.goal } in
+  let rect_corners =
+    input.rects
+    |> map (fun { x; y; width; height } ->
+           [
+             { x; y };
+             { x; y = y + height };
+             { x = x + width; y };
+             { x = x + width; y = y + height };
+           ])
+    |> flatten
+  in
+  (* The origin, the goal & all the corners of the rectangles become the vertices
+     of the graph *)
+  let vertices = [ origin; goal ] @ rect_corners in
+  let graph = create () in
+  vertices |> iter (add_vertex graph);
+  (* Each line between the vertices becomes an edge of the graph if it doesn't
+     intersect with any of the rectangles *)
+  for i = 0 to length vertices - 1 do
+    let a = nth vertices i in
+    for j = i + 1 to length vertices - 1 do
+      let b = nth vertices j in
+      let valid_edge =
+        input.rects
+        |> fold_left
+             (fun no_intersects rect ->
+               if no_intersects then not (intersect_line_rect a b rect)
+               else false)
+             true
+      in
+      if valid_edge then add_edge graph a b
+    done
+  done;
+  (* Use Dijkstra's algorithm to find the shortest path between origin & goal *)
+  let path, _ = shortest_path graph origin goal in
   {
     path =
-      (match !shortest_path with
-      | Some path -> path |> map (fun (x, y) -> { x; y })
-      | None -> raise Exit);
+      origin :: (path |> map (fun (_vertex_a, _edge_id, vertex_b) -> vertex_b));
     distance =
-      (match !shortest_dist with
-      | Some distance -> distance
-      | None -> raise Exit);
+      path |> fold_left (fun sum (a, _, b) -> Float.add sum @@ calc_dist a b) 0.;
   }
 
 (*
@@ -305,6 +218,6 @@ generate_desmos
     rects =
       [
         { x = -18; y = 31; width = 22; height = 8 };
-        { x = -6; y = 10; width = 22; height = 8 };
+        { x = -6; y = 10; width = 102; height = 8 };
       ];
   }
