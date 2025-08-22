@@ -1,6 +1,7 @@
 (executable
  (public_name main)
- (name main))
+ (name main)
+ (libraries tar tar.gz unix))
 
 (executable
  (public_name main-comments)

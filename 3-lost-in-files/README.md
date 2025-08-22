@@ -3,7 +3,7 @@
 
 **Challenge 3 - Lost in files**
 
-**Date:** 22nd August 2025
+**Date:** 23rd August 2025
 
 **Entry:**  OCaml
 
@@ -13,4 +13,4 @@
 + `$ cd 3-lost-in-files`
 + `$ opam install .`
 + `$ dune build`
-+ `$ ./_build/default/main.exe`
++ `$ ./_build/default/main.exe /path/to/archive.tar.gz`
