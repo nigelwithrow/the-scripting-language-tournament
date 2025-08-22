@@ -1,0 +1,20 @@
+(lang dune 3.19)
+
+(name lost-in-files)
+
+(generate_opam_files true)
+
+(source
+ (github nigelwithrow/the-scripting-language-tournament-ocaml))
+
+(authors "Nigel Withrow <nigelwithrow78@gmail.com>")
+
+(maintainers "Nigel Withrow <nigelwithrow78@gmail.com>")
+
+(package
+ (name lost-in-files)
+ (depends ocaml tar)
+ (tags
+  ("add topics" "to describe" your project)))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html

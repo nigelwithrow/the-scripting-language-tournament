@@ -1,0 +1,8 @@
+(executable
+ (public_name main)
+ (name main))
+
+(executable
+ (public_name main-comments)
+ (name main_comments)
+ (libraries tar tar.gz unix))
