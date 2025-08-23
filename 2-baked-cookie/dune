@@ -1,9 +1,0 @@
-(executable
- (public_name main)
- (name main)
- (libraries bimage bimage-unix))
-
-(executable
- (public_name main-comments)
- (name main_comments)
- (libraries bimage bimage-unix))
