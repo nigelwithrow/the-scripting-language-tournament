@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "@types/tar": "^6.1.13",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "minipass": "^7.1.2",
+    "tar": "^7.4.3"
+  }
+}
