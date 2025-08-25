@@ -52,30 +52,30 @@ fn random(board: &[char; 9]) -> usize {
     }
 }
 
+type Solver = Box<dyn FnMut(&[char; 9]) -> usize>;
+
 fn main() {
-    type Solver = Box<dyn FnMut(&[char; 9]) -> usize>;
     let opponent: Solver = match std::env::args().nth(1) {
         Some(file) => {
             if file.ends_with(".ts") {
                 panic!("Compile to .js first!")
             } else if file.ends_with(".js") {
-                // let context = quick_js::Context::new().unwrap();
-                // context
-                //     .add_callback("print", |value: quick_js::Arguments| {
-                //         for arg in value.into_vec() {
-                //             println!("{:?}", arg)
-                //         }
-                //     })
-                //     .unwrap();
-                // context
-                //     .eval(&std::fs::read_to_string(file).unwrap())
-                //     .unwrap();
-                // Box::new(move |board| {
-                //     context
-                //         .eval_as::<i32>(&format!("move({:?})", String::from_iter(board.iter())))
-                //         .unwrap() as _
-                // })
-                todo!()
+                let context = quick_js::Context::new().unwrap();
+                context
+                    .add_callback("print", |value: quick_js::Arguments| {
+                        for arg in value.into_vec() {
+                            println!("{:?}", arg)
+                        }
+                    })
+                    .unwrap();
+                context
+                    .eval(&std::fs::read_to_string(file).unwrap())
+                    .unwrap();
+                Box::new(move |board| {
+                    context
+                        .eval_as::<i32>(&format!("move({:?})", String::from_iter(board.iter())))
+                        .unwrap() as _
+                })
             } else if file.ends_with(".rb") {
                 use rutie::{Integer, Object, VM};
                 VM::init();
@@ -100,7 +100,7 @@ fn main() {
                         ))
                         .unwrap() as _
                 })
-            } else if file.ends_with(".c") || file.ends_with(".ml") {
+            } else if file.ends_with(".c") {
                 panic!("Compile to a shared library first!")
             } else if file.ends_with(".so") {
                 let lib = Box::leak(Box::new(unsafe { libloading::Library::new(file).unwrap() }));
@@ -117,6 +117,8 @@ fn main() {
                         ) as _
                     }
                 })
+            } else if file.ends_with(".ml") {
+                ocaml::solution()
             } else {
                 panic!("Unknown file type for {}", file);
             }
@@ -183,4 +185,44 @@ fn main() {
         }
     };
     println!("Winner: {}", winner);
+}
+
+mod ocaml {
+    #[cfg(feature = "ocaml")]
+    use std::{
+        ffi::{CString, c_char, c_int, c_void},
+        ptr::null,
+    };
+
+    #[cfg(feature = "ocaml")]
+    #[link(name = "solution")]
+    unsafe extern "C" {
+        fn caml_startup(argv: *const *const c_char) -> c_void;
+        fn r#move(board: *const c_char) -> c_int;
+    }
+
+    pub fn solution() -> super::Solver {
+        #[cfg(feature = "ocaml")]
+        {
+            Box::new(move |board| unsafe {
+                let argv = std::env::args()
+                    .map(|arg| {
+                        let cstr = CString::new(arg.as_bytes()).unwrap();
+                        cstr.as_ptr().cast::<i8>()
+                    })
+                    .chain([null()]) // append argv with null-terminator
+                    .collect::<Vec<_>>();
+                caml_startup(argv.as_ptr());
+                r#move(
+                    std::ffi::CString::new(String::from_iter(board.iter()))
+                        .unwrap()
+                        .as_ptr(),
+                ) as _
+            })
+        }
+        #[cfg(not(feature = "ocaml"))]
+        {
+            panic!("ocaml needs flag `ocaml` to be enabled. Run `cargo build -F ocaml`");
+        }
+    }
 }

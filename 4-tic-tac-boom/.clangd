@@ -1,0 +1,4 @@
+CompileFlags:
+  Add:
+    # ocaml C ffi utility library
+    - "-I/usr/lib/ocaml"

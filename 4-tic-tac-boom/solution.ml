@@ -7,4 +7,6 @@ let move (board : string) : int =
   in
   find_empty 0
 
+let _ = Callback.register "move" move
+
 (* I give up making it link with C. You can figure it out on your own *)
