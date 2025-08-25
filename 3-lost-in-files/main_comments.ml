@@ -92,19 +92,20 @@ let run t fd =
 
 (* Find whether string `pat` occurs in another string `str` *)
 let occurs pat str =
+  let pat = String.to_seq pat () in
   let open Seq in
   let rec occurs' = function
     | Nil, _ -> true
     | Cons _, Nil -> false
-    | (Cons (px, pxs) as pat), Cons (sx, sxs) ->
+    | Cons (px, pxs), Cons (sx, sxs) ->
         if Char.equal px sx then
           (* increment str & pattern *)
           occurs' (pxs (), sxs ())
         else
-          (* increment only str *)
+          (* increment str, reset pattern *)
           occurs' (pat, sxs ())
   in
-  occurs' String.(to_seq pat (), to_seq str ())
+  occurs' String.(pat, to_seq str ())
 
 (*
   Algorithm to recursively try to uncompress & unarchive each entry of an
