@@ -90,7 +90,7 @@ let run t fd =
   in
   run' fd t
 
-(* Find whether string `pat` occurs in another string `str` *)
+(* Find whether string `pat` occurs at the start of string `str` *)
 let occurs pat str =
   let pat = String.to_seq pat () in
   let open Seq in
@@ -101,9 +101,7 @@ let occurs pat str =
         if Char.equal px sx then
           (* increment str & pattern *)
           occurs' (pxs (), sxs ())
-        else
-          (* increment str, reset pattern *)
-          occurs' (pat, sxs ())
+        else false
   in
   occurs' String.(pat, to_seq str ())
 

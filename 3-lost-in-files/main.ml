@@ -69,8 +69,7 @@ let occurs pat str =
     | Nil, _ -> true
     | Cons _, Nil -> false
     | Cons (px, pxs), Cons (sx, sxs) ->
-        if Char.equal px sx then occurs' (pxs (), sxs ())
-        else occurs' (pat, sxs ())
+        if Char.equal px sx then occurs' (pxs (), sxs ()) else false
   in
   occurs' String.(pat, to_seq str ())
 
