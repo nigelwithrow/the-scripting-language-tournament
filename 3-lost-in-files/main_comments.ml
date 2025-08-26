@@ -118,33 +118,24 @@ let rec algo () =
          Tar.bind
            (Tar.really_read (Int64.to_int header.Tar.Header.file_size))
            (fun content ->
-             (* Recursively, uncompress & unarchive contents of this entry *)
-             (try
-                run (algo ())
-                  (Mem { buf = Bytes.of_string content; cursor = 0 })
-              with
-             (* Failed, i.e., contents probably weren't another archive meaning
-                they were text *)
-             | Failure _ -> (
-                 (* Find occurrence of answer in contents *)
-                 let occurred =
-                   content
-                   (* Split into lines *)
-                   |> String.split_on_char '\n'
-                   (* Find first line with having the answer *)
-                   |> List.fold_left
-                        (fun found line ->
-                          match found with
-                          | Some line -> Some line
-                          | None ->
-                              if occurs "Answer: " line then Some line else None)
-                        None
-                 in
-                 match occurred with
-                 (* Halt searching, answer was found *)
-                 | Some found -> raise (Found found)
-                 | None -> ())
-             | End_of_file -> ());
+             if not (occurs ".tar.gz" header.file_name) then
+               (* Entry is not a nested archive; find occurrence of `Answer:` in
+                  contents *)
+               let occurred =
+                 content
+                 (* Split into lines *)
+                 |> String.split_on_char '\n'
+                 (* Find first line having the answer *)
+                 |> List.find_map (fun line ->
+                        if occurs "Answer: " line then Some line else None)
+               in
+               match occurred with
+               (* Halt searching, answer was found *)
+               | Some found -> raise (Found found)
+               | None -> ()
+             else
+               (* Recurse: uncompress+unarchive contents of nested .tar.gz *)
+               run (algo ()) (Mem { buf = Bytes.of_string content; cursor = 0 });
              Tar.return (Ok ())))
        ())
 
