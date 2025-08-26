@@ -90,8 +90,13 @@ let run t fd =
   in
   run' fd t
 
-(* Find whether string `pat` occurs at the start of string `str` *)
-let occurs pat str =
+(*
+  Find whether string `pat` occurs in string `str`
+
+  If `strict` = true, fail if `pat` doesn't occur exactly at the start of the
+  `str`
+*)
+let occurs ~strict pat str =
   let pat = String.to_seq pat () in
   let open Seq in
   let rec occurs' = function
@@ -101,7 +106,12 @@ let occurs pat str =
         if Char.equal px sx then
           (* increment str & pattern *)
           occurs' (pxs (), sxs ())
-        else false
+        else if strict then
+          (* pat didn't occur at start of string, fail *)
+          false
+        else
+          (* increment str, reset pattern *)
+          occurs' (pat, sxs ())
   in
   occurs' String.(pat, to_seq str ())
 
@@ -116,7 +126,7 @@ let rec algo () =
          Tar.bind
            (Tar.really_read (Int64.to_int header.Tar.Header.file_size))
            (fun content ->
-             if not (occurs ".tar.gz" header.file_name) then
+             if not (occurs ~strict:false ".tar.gz" header.file_name) then
                (* Entry is not a nested archive; find occurrence of `Answer:` in
                   contents *)
                let occurred =
@@ -125,7 +135,8 @@ let rec algo () =
                  |> String.split_on_char '\n'
                  (* Find first line having the answer *)
                  |> List.find_map (fun line ->
-                        if occurs "Answer: " line then Some line else None)
+                        if occurs ~strict:true "Answer: " line then Some line
+                        else None)
                in
                match occurred with
                (* Halt searching, answer was found *)

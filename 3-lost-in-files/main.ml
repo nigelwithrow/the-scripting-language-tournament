@@ -62,14 +62,16 @@ let run t fd =
   in
   run' fd t
 
-let occurs pat str =
+let occurs ~strict pat str =
   let pat = String.to_seq pat () in
   let open Seq in
   let rec occurs' = function
     | Nil, _ -> true
     | Cons _, Nil -> false
     | Cons (px, pxs), Cons (sx, sxs) ->
-        if Char.equal px sx then occurs' (pxs (), sxs ()) else false
+        if Char.equal px sx then occurs' (pxs (), sxs ())
+        else if strict then false
+        else occurs' (pat, sxs ())
   in
   occurs' String.(pat, to_seq str ())
 
@@ -80,11 +82,12 @@ let rec algo () =
          Tar.bind
            (Tar.really_read (Int64.to_int header.Tar.Header.file_size))
            (fun content ->
-             if not (occurs ".tar.gz" header.file_name) then
+             if not (occurs ~strict:false ".tar.gz" header.file_name) then
                let occurred =
                  content |> String.split_on_char '\n'
                  |> List.find_map (fun line ->
-                        if occurs "Answer: " line then Some line else None)
+                        if occurs ~strict:true "Answer: " line then Some line
+                        else None)
                in
                match occurred with
                | Some found -> raise (Found found)
