@@ -63,15 +63,16 @@ let run t fd =
   run' fd t
 
 let occurs pat str =
+  let pat = String.to_seq pat () in
   let open Seq in
   let rec occurs' = function
     | Nil, _ -> true
     | Cons _, Nil -> false
-    | (Cons (px, pxs) as pat), Cons (sx, sxs) ->
+    | Cons (px, pxs), Cons (sx, sxs) ->
         if Char.equal px sx then occurs' (pxs (), sxs ())
         else occurs' (pat, sxs ())
   in
-  occurs' String.(to_seq pat (), to_seq str ())
+  occurs' String.(pat, to_seq str ())
 
 let rec algo () =
   Tar_gz.in_gzipped
@@ -80,25 +81,17 @@ let rec algo () =
          Tar.bind
            (Tar.really_read (Int64.to_int header.Tar.Header.file_size))
            (fun content ->
-             (try
-                run (algo ())
-                  (Mem { buf = Bytes.of_string content; cursor = 0 })
-              with
-             | Failure _ -> (
-                 let occurred =
-                   content |> String.split_on_char '\n'
-                   |> List.fold_left
-                        (fun found line ->
-                          match found with
-                          | Some line -> Some line
-                          | None ->
-                              if occurs "Answer: " line then Some line else None)
-                        None
-                 in
-                 match occurred with
-                 | Some found -> raise (Found found)
-                 | None -> ())
-             | End_of_file -> ());
+             if not (occurs ".tar.gz" header.file_name) then
+               let occurred =
+                 content |> String.split_on_char '\n'
+                 |> List.find_map (fun line ->
+                        if occurs "Answer: " line then Some line else None)
+               in
+               match occurred with
+               | Some found -> raise (Found found)
+               | None -> ()
+             else
+               run (algo ()) (Mem { buf = Bytes.of_string content; cursor = 0 });
              Tar.return (Ok ())))
        ())
 
