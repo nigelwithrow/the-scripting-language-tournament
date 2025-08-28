@@ -102,7 +102,7 @@ module Strategy = struct
     ] [@@ocamlformat "disable"] in
     permutations
     |> List.find_map (fun (a', b', c') ->
-           if a board.(a') && b board.(b') && c board.(c') then Some (a', b', c)
+           if a board.(a') && b board.(b') && c board.(c') then Some (a', b', c')
            else None)
 
   type t = cell array -> int option
