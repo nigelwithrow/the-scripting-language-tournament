@@ -76,7 +76,7 @@ module Game = struct
 end
 
 (*
-  Strategies decided what move we should play
+  Strategies decide what move we should play
 *)
 module Strategy = struct
   open Game
