@@ -77,16 +77,7 @@ fn main() {
                         .unwrap() as _
                 })
             } else if file.ends_with(".rb") {
-                use rutie::{Integer, Object, VM};
-                VM::init();
-                VM::eval(&std::fs::read_to_string(file).unwrap()).unwrap();
-                Box::new(move |board| {
-                    VM::eval(&format!("move({:?})", String::from_iter(board.iter())))
-                        .unwrap()
-                        .try_convert_to::<Integer>()
-                        .unwrap()
-                        .to_u32() as _
-                })
+                ruby::solution()
             } else if file.ends_with(".sh") {
                 let mut interpreter = flash::interpreter::Interpreter::new();
                 interpreter
@@ -154,6 +145,7 @@ fn main() {
         },
     ];
 
+    let mut moves = 1;
     let winner = 'outer: loop {
         for player in &mut players {
             let idx = (player.function)(&board);
@@ -183,7 +175,9 @@ fn main() {
                 winner => break 'outer winner,
             }
         }
+        moves += 1;
     };
+    println!("Moves: {moves}");
     println!("Winner: {}", winner);
 }
 
@@ -223,6 +217,28 @@ mod ocaml {
         #[cfg(not(feature = "ocaml"))]
         {
             panic!("ocaml needs flag `ocaml` to be enabled. Run `cargo build -F ocaml`");
+        }
+    }
+}
+
+mod ruby {
+    pub fn solution() -> super::Solver {
+        #[cfg(feature = "ruby")]
+        {
+            use rutie::{Integer, Object, VM};
+            VM::init();
+            VM::eval(&std::fs::read_to_string(file).unwrap()).unwrap();
+            Box::new(move |board| {
+                VM::eval(&format!("move({:?})", String::from_iter(board.iter())))
+                    .unwrap()
+                    .try_convert_to::<Integer>()
+                    .unwrap()
+                    .to_u32() as _
+            })
+        }
+        #[cfg(not(feature = "ruby"))]
+        {
+            panic!("ruby needs flag `ruby` to be enabled. Run `cargo build -F ruby`")
         }
     }
 }
