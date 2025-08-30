@@ -43,9 +43,9 @@ fn human(_: &[char; 9]) -> usize {
     input.trim().parse().unwrap()
 }
 
-fn random(board: &[char; 9]) -> usize {
+fn random(rng: &mut impl rand::Rng, board: &[char; 9]) -> usize {
     loop {
-        let idx = rand::random_range(0..9);
+        let idx = rng.random_range(0..9);
         if board[idx] == ' ' {
             return idx;
         }
@@ -55,27 +55,13 @@ fn random(board: &[char; 9]) -> usize {
 type Solver = Box<dyn FnMut(&[char; 9]) -> usize>;
 
 fn main() {
-    let opponent: Solver = match std::env::args().nth(1) {
+    let args = std::env::args().collect::<Vec<_>>();
+    let opponent: Solver = match args.get(1) {
         Some(file) => {
             if file.ends_with(".ts") {
                 panic!("Compile to .js first!")
             } else if file.ends_with(".js") {
-                let context = quick_js::Context::new().unwrap();
-                context
-                    .add_callback("print", |value: quick_js::Arguments| {
-                        for arg in value.into_vec() {
-                            println!("{:?}", arg)
-                        }
-                    })
-                    .unwrap();
-                context
-                    .eval(&std::fs::read_to_string(file).unwrap())
-                    .unwrap();
-                Box::new(move |board| {
-                    context
-                        .eval_as::<i32>(&format!("move({:?})", String::from_iter(board.iter())))
-                        .unwrap() as _
-                })
+                js::solution()
             } else if file.ends_with(".rb") {
                 ruby::solution()
             } else if file.ends_with(".sh") {
@@ -136,7 +122,13 @@ fn main() {
         Player {
             ch: 'x',
             history: Vec::new(),
-            function: Box::new(random),
+            function: {
+                use rand::SeedableRng as _;
+                let mut rng = rand::rngs::StdRng::from_seed(
+                    [args.get(2).map_or(42, |v| v.parse().unwrap()); 32],
+                );
+                Box::new(move |board| random(&mut rng, board))
+            },
         },
         Player {
             ch: 'o',
@@ -145,8 +137,9 @@ fn main() {
         },
     ];
 
-    let mut moves = 1;
+    let mut moves = 0;
     let winner = 'outer: loop {
+        moves += 1;
         for player in &mut players {
             let idx = (player.function)(&board);
             if board[idx] != ' ' {
@@ -169,16 +162,17 @@ fn main() {
                 board[player.history[0]] = board[player.history[0]].to_ascii_uppercase();
             }
 
-            print_board(&board);
             match win(&board) {
                 ' ' => (),
-                winner => break 'outer winner,
+                winner => {
+                    print_board(&board);
+                    break 'outer winner;
+                }
             }
         }
-        moves += 1;
+        print_board(&board);
     };
-    println!("Moves: {moves}");
-    println!("Winner: {}", winner);
+    println!("Winner: {}\nMoves took: {}", winner, moves);
 }
 
 mod ocaml {
@@ -239,6 +233,34 @@ mod ruby {
         #[cfg(not(feature = "ruby"))]
         {
             panic!("ruby needs flag `ruby` to be enabled. Run `cargo build -F ruby`")
+        }
+    }
+}
+
+mod js {
+    pub fn solution() -> super::Solver {
+        #[cfg(feature = "js")]
+        {
+            let context = quick_js::Context::new().unwrap();
+            context
+                .add_callback("print", |value: quick_js::Arguments| {
+                    for arg in value.into_vec() {
+                        println!("{:?}", arg)
+                    }
+                })
+                .unwrap();
+            context
+                .eval(&std::fs::read_to_string(file).unwrap())
+                .unwrap();
+            Box::new(move |board| {
+                context
+                    .eval_as::<i32>(&format!("move({:?})", String::from_iter(board.iter())))
+                    .unwrap() as _
+            })
+        }
+        #[cfg(not(feature = "js"))]
+        {
+            panic!("TypeScript/JavaScri[t needs flag `js` to be enabled. Run `cargo build -F js`")
         }
     }
 }

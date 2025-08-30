@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-64 0 128 128" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <bx:grid x="0" y="0" width="1" height="1"/>
+  </defs>
+  <ellipse style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" cy="128" rx="1" ry="1"/>
+  <rect x="-5" y="102" width="49" height="24" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <rect x="-17" y="100" width="10" height="20" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <rect x="-25" y="87" width="38" height="9" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <rect x="-60" y="98" width="36" height="23" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <rect x="-62" y="3" width="10" height="47" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <rect x="-61" y="53" width="45" height="25" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <rect x="-59" y="81" width="32" height="15" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <rect x="-23" y="80" width="82" height="5" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <rect x="9" y="5" width="26" height="33" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <rect x="30" y="40" width="8" height="10" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <rect x="-41" y="5" width="22" height="18" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <rect x="-45" y="33" width="12" height="14" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  <rect x="46" y="10" width="14" height="30" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+	<polyline fill='none' stroke='#f00' stroke-width='1' points='0 0 -16 78 -23 80 -25 87 -25 96 -24 98 -17 120 -5 126 0 128' />
+</svg>
