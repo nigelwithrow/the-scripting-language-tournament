@@ -1,0 +1,16 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='976' height='384'>
+	<rect x='576' y='80' width='80' height='80' fill='#000' stroke='none' />
+	<rect x='360' y='800' width='80' height='160' fill='#000' stroke='none' />
+	<rect x='296' y='696' width='304' height='72' fill='#000' stroke='none' />
+	<rect x='16' y='784' width='288' height='184' fill='#000' stroke='none' />
+	<rect x='0' y='24' width='80' height='376' fill='#000' stroke='none' />
+	<rect x='8' y='424' width='360' height='200' fill='#000' stroke='none' />
+	<rect x='24' y='648' width='256' height='120' fill='#000' stroke='none' />
+	<rect x='312' y='640' width='656' height='40' fill='#000' stroke='none' />
+	<rect x='568' y='40' width='208' height='264' fill='#000' stroke='none' />
+	<rect x='736' y='320' width='64' height='80' fill='#000' stroke='none' />
+	<rect x='168' y='40' width='176' height='144' fill='#000' stroke='none' />
+	<rect x='136' y='264' width='96' height='112' fill='#000' stroke='none' />
+	<rect x='864' y='80' width='112' height='240' fill='#000' stroke='none' />
+	<polyline fill='none' stroke='#f00' stroke-width='8' points='496 0 344 40 344 184 368 424 368 624 496 384 ' />
+</svg>

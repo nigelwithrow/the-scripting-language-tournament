@@ -1,17 +1,17 @@
+@Tournament Participant
 
-# The Scripting Language Tournament by [InfiniteCoder01](https://github.com/infiniteCoder01)
+## _Tic Tac Boom!_
+> \- "#@?ey*0t" - waht does this even mean? - you look at the answer you found.
+> \- Hello - Somebody whispers behind you, nearly giving you a heart attack
+> \- I'm Windows. - You turn around terrified.
+> \- I have a proposition - Windows says - if you beat me in vanishing Tic-Tac-Toe,
+> I will let you out.
 
-**Challenge 4 - Tic Tac Boom**
+You are given sample scripts, and a rust program (use `cargo run -- solution.{c/sh/ts/rb/ml}`) to test your solutions.
+Good luck escaping!
 
-**Date:** 28th August 2025
-
-**Entry:**  OCaml
-
-**Author:** Nigel Withrow <nigelwithrow78@gmail.com>
-
-## Instructions
-+ Have system-wide Rust & Cargo installation
-+ `$ cd 4-tic-tac-boom`
-+ `$ nix develop`
-+ `$ just tic-tac-boom`
-+ `$ ./target/release/tic-tac-boom ./solution.ml`
+### Scoring
+This challenge will be scored using the following formula:
+```python
+(win_rate_of_10_games + min(5 / avg_moves_to_win, 1) + min(150 / token_count, 1) + elegance_score) / 4
+```
