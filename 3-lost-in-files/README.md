@@ -19,3 +19,12 @@ This challenge will be scored using the following formula:
 ```python
 (min(5000 / runtime_ms, 1) + min(150 / token_count, 1) + elegance_score) / 3
 ```
+
+#### Results
+|  Language  | Time | Token | Elegance | **Result** |
+-----------------------------------------------------
+| OCaml      | 0.10 |  0.18 |   0.50   |    0.26    |
+| TypeScript | 0.03 |  0.63 |   0.60   |    0.42    |
+| BASH       | 0.08 |  1.00 |   0.85   |    0.64    |
+| C          | 0.59 |  0.31 |   0.70   |    0.53    |
+| Ruby       | 0.16 |  1.00 |   0.95   |    0.70    |
