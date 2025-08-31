@@ -22,7 +22,7 @@ This challenge will be scored using the following formula:
 
 #### Results
 |  Language  | Time | Token | Elegance | **Result** |
------------------------------------------------------
+| ---------- | ---- | ----- | -------- | ---------- |
 | OCaml      | 0.10 |  0.18 |   0.50   |    0.26    |
 | TypeScript | 0.03 |  0.63 |   0.60   |    0.42    |
 | BASH       | 0.08 |  1.00 |   0.85   |    0.64    |

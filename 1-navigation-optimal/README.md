@@ -50,7 +50,7 @@ This challenge will be scored using the following formula:
 
 #### Results
 |  Language  | Path | Time | Elegance | **Result** |
-----------------------------------------------------
+| ---------- | ---- | ---- | -------- | ---------- |
 | OCaml      | 1.00 | 1.00 |   0.80   |    0.93    |
 | TypeScript | 0.59 | 1.00 |   0.70   |    0.76    |
 | BASH       | 0.66 | 0.19 |   0.67   |    0.50    |
