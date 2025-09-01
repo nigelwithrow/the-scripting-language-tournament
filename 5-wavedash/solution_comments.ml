@@ -1,3 +1,16 @@
+(*
+  # The Scripting Language Tournament by InfiniteCoder01
+  Challenge 4 - Wavedash
+  Date: 1st September 2025
+
+  Entry:  OCaml
+  Author: Nigel Withrow <nigelwithrow78@gmail.com>
+
+  Instructions:
+  + `$ cd 5-wavedash`
+  + `$ ocamlc solution.ml -o solution`
+  + `$ ./solution`
+*)
 type building = { xstart : int; xend : int; height : int }
 type jump = { angle : int; time : float }
 
