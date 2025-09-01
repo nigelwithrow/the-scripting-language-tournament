@@ -7,7 +7,7 @@
   Author: Nigel Withrow <nigelwithrow78@gmail.com>
 
   Instructions:
-  + `$ cd 5-wavedash`
+  + `$ cd 5-wavedash/ocaml`
   + `$ ocamlc solution.ml -o solution`
   + `$ ./solution`
 *)
