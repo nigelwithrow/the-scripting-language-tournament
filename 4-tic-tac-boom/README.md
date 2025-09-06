@@ -15,3 +15,12 @@ This challenge will be scored using the following formula:
 ```python
 (win_rate_of_10_games + min(5 / avg_moves_to_win, 1) + min(150 / token_count, 1) + elegance_score) / 4
 ```
+
+#### Results
+|  Language  | Winrate | Move | Token | Elegance | **Result** |
+| ---------- | ------- | ---- | ----- | -------- | ---------- |
+| OCaml      |   1.00  | 0.75 |  0.11 |   0.85   |    0.68    |
+| TypeScript |   1.00  | 0.75 |  0.09 |   0.90   |    0.69    |
+| BASH       |    --   |  --  |   --  |    --    |     --     |
+| C          |   1.00  | 0.91 |  0.34 |   0.85   |    0.78    |
+| Ruby       |   0.90  | 0.77 |  0.71 |   0.95   |    0.83    |

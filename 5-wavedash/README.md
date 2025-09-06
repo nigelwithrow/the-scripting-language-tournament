@@ -22,9 +22,22 @@ however you can step on the roof (but you'll have to dash again immediately).
 Output all the angles and times you will use.
 Visualization of one dash, so you can hopefully understand: https://www.desmos.com/calculator/ei9hwms5o6
 
+I hope this does a better job at explaining: https://www.desmos.com/calculator/bbafnacmaf
+
 ### Scoring
 This challenge will be scored using the following formula:
 ```python
 ((8 / time) * 3 + min(250 / token_count, 1) + elegance_score) / 5
 ```
+
+#### Results
+|  Language  | Time | Token | Elegance | **Result** |
+| ---------- | ---- | ----- | -------- | ---------- |
+| OCaml      | 1.60 |  0.83 |    ??    |     ??     |
+| TypeScript | 1.60 |  0.92 |    ??    |     ??     |
+| BASH       | 2.46 |  1.00 |    ??    |     ??     |
+| C          | 2.86 |  0.53 |    ??    |     ??     |
+| Ruby       | 2.42 |  0.87 |    ??    |     ??     |
+
+Final test: https://www.desmos.com/calculator/jknjjmc10r
 
