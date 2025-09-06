@@ -38,10 +38,11 @@ let solve ~buildings ~goal =
       (init (Float.to_int num_hor_jumps) (fun _ -> { angle = 0; time = 1. })))
 ;;
 
+let total_time = ref 0.0;;
 solve
   ~buildings:
     [
       { xstart = 2; xend = 4; height = 3 }; { xstart = 5; xend = 6; height = 4 };
     ]
   ~goal:10
-|> Seq.iter (fun { angle; time } -> Printf.printf "(%d, %f)\n" angle time)
+|> Seq.iter (fun { angle; time } -> (total_time := !total_time + time; Printf.printf "(%f, %d), " !total_time angle))

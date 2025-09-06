@@ -29,8 +29,11 @@ function solve(buildings: building[], goal: number) {
     .concat((Array(num_hor_jumps)).fill({ angle: 0, time: 1 }))
 }
 
+let total_time = 0.0;
 solve([
   { xstart: 2, xend: 4, height: 3 }, { xstart: 5, xend: 6, height: 4 },
 ], 10)
-  .forEach(({ angle, time }, i) => console.log(`(${angle}, ${time})`))
-
+  .forEach(({ angle, time }, i) => {
+    total_time += time;
+    console.log(`(${total_time}, ${angle}), `)
+  })
