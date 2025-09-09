@@ -4,7 +4,7 @@ See releases for "Lost in files" master tarball
 
 # Contestants
 ## OCaml
-![OCaml picture](pictures/ocaml.png)
+![OCaml picture](pictures/ocaml.png) \
 Submitted by: [nigelwithrow](https://www.github.com/nigelwithrow) \
 Homepage: https://ocaml.org/ \
 Tools Available: ocamlc (native compiler), ocaml (bytecode interpreter) , js_of_ocaml (javascript compiler), opam (package manager), dune (build system)
@@ -26,7 +26,7 @@ print_endline "Hello, World"
 
 
 ## Typescript
-![TypeScript picture](pictures/typescript.png)
+![TypeScript picture](pictures/typescript.png) \
 Submitted by: [grngxd](https://www.github.com/grngxd) \
 Solutions by: [nigelwithrow](https://www.github.com/nigelwithrow) and [InfiniteCoder01](https://www.github.com/InfiniteCoder01) \
 Homepage: https://typescriptlang.org/ \
@@ -54,7 +54,7 @@ console.log("Hello, World!")
 
 
 ## BASH
-![BASH picture](pictures/bash.png)
+![BASH picture](pictures/bash.png) \
 Submitted by: [cgsdev0](https://www.github.com/cgsdev0) \
 Solutions by: [InfiniteCoder01](https://www.github.com/InfiniteCoder01) \
 language: bash \
@@ -72,7 +72,7 @@ printf 'hello world\n'
 
 
 ## The C programming language
-![C language picture](pictures/the-c-programming-language.png)
+![C language picture](pictures/the-c-programming-language.png) \
 Submitted by: [InfiniteCoder01](https://www.github.com/InfiniteCoder01) \
 Homepage: https://www.c-language.org/ \
 Tools Available: TCC, GCC, clang (and clangd), Emscripten, picoc and many others
@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
 
 
 ## Ruby
-![Ruby picture](pictures/ruby.png)
+![Ruby picture](pictures/ruby.png) \
 Submitted by: [penguin-operator](https://www.github.com/penguin-operator) \
 Homepage: https://ruby-lang.org/ \
 Docs: https://docs.ruby-lang.org/en/3.3/ \
