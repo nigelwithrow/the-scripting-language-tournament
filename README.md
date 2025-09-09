@@ -5,7 +5,7 @@ See releases for "Lost in files" master tarball
 # Contestants
 ## OCaml
 ![OCaml picture](pictures/ocaml.png)
-Submitted by: <https://www.github.com/nigelwithrow> \
+Submitted by: [nigelwithrow](https://www.github.com/nigelwithrow) \
 Homepage: https://ocaml.org/ \
 Tools Available: ocamlc (native compiler), ocaml (bytecode interpreter) , js_of_ocaml (javascript compiler), opam (package manager), dune (build system)
 
@@ -27,8 +27,8 @@ print_endline "Hello, World"
 
 ## Typescript
 ![TypeScript picture](pictures/typescript.png)
-Submitted by: <https://www.github.com/grngxd> \
-Solutions by: <https://www.github.com/nigelwithrow> and <https://www.github.com/InfiniteCoder01> \
+Submitted by: [grngxd](https://www.github.com/grngxd) \
+Solutions by: [nigelwithrow](https://www.github.com/nigelwithrow) and [InfiniteCoder01](https://www.github.com/InfiniteCoder01) \
 Homepage: https://typescriptlang.org/ \
 Docs: https://www.typescriptlang.org/docs/
 
@@ -55,8 +55,8 @@ console.log("Hello, World!")
 
 ## BASH
 ![BASH picture](pictures/bash.png)
-Submitted by: <https://www.github.com/cgsdev0> \
-Solutions by: <https://www.github.com/InfiniteCoder01> \
+Submitted by: [cgsdev0](https://www.github.com/cgsdev0) \
+Solutions by: [InfiniteCoder01](https://www.github.com/InfiniteCoder01) \
 language: bash \
 homepage: https://www.gnu.org/software/bash/ \
 manual: https://www.youtube.com/watch?v=7taNCDMpPvc
@@ -73,7 +73,7 @@ printf 'hello world\n'
 
 ## The C programming language
 ![C language picture](pictures/the-c-programming-language.png)
-Submitted by: <https://www.github.com/InfiniteCoder01> \
+Submitted by: [InfiniteCoder01](https://www.github.com/InfiniteCoder01) \
 Homepage: https://www.c-language.org/ \
 Tools Available: TCC, GCC, clang (and clangd), Emscripten, picoc and many others
 
@@ -82,7 +82,7 @@ This is an odd choice. But it shows that you can push the boundaries.
 C is fast tho 🙂
 
 ```c
-#include <stdio.h>
+#include []<stdio.h>
 
 int main(int argc, char **argv) {
   printf("Hello, World!\n");
@@ -98,7 +98,14 @@ int main(int argc, char **argv) {
 
 ## Ruby
 ![Ruby picture](pictures/ruby.png)
-Submitted by: <https://www.github.com/penguin-operator> \
+Submitted by: [repl/hot reloader, but it is such a simple and old language, that there are tools written for literally anything. It also is the first language to run on basically any hardware. -3 more for being platform-dependent, because cross-platform code becomes more complex than if you don't care about platform)
+2. Ecosystem - 7/10 (well-known language, has A LOT of libraries, but it is missing an official implementation. Sure, most popular compilers are similar, but it is still a pretty big problem. It also has similar problems with package management)
+3. Average development time - 5/10 (it is a very simple language, when writing it you probably won't have issues figuring out code architecture. And it has a lot of premade libraries. But lack of proper package manager/build system and a singular toolchain, together with inability to write cross-platform code easily and having segfaults and UB can make complex projects take a lot of extra time. If you use it a lot, you will get used to it and you will be able to cut devtime drastically, but for a scripting language, it is an issue)
+
+
+## Ruby
+![Ruby picture](pictures/ruby.png)
+Submitted by: []<https://www.github.com/penguin-operator](https://www.github.com/penguin-operator) \
 Homepage: https://ruby-lang.org/ \
 Docs: https://docs.ruby-lang.org/en/3.3/ \
 Toolset: ruby (interpreter) , gem (packagemanager)
