@@ -33,11 +33,11 @@ This challenge will be scored using the following formula:
 #### Results
 |  Language  | Time | Token | Elegance | **Result** |
 | ---------- | ---- | ----- | -------- | ---------- |
-| OCaml      | 1.60 |  0.83 |    ??    |     ??     |
-| TypeScript | 1.60 |  0.92 |    ??    |     ??     |
-| BASH       | 2.46 |  1.00 |    ??    |     ??     |
-| C          | 2.86 |  0.53 |    ??    |     ??     |
-| Ruby       | 2.42 |  0.87 |    ??    |     ??     |
+| OCaml      | 1.60 |  0.83 |   0.80   |    0.65    |
+| TypeScript | 1.60 |  0.92 |   0.90   |    0.68    |
+| BASH       | 2.46 |  1.00 |   0.60   |    0.81    |
+| C          | 2.86 |  0.53 |   0.80   |    0.84    |
+| Ruby       | 2.42 |  0.87 |   0.90   |    0.84    |
 
 Final test: https://www.desmos.com/calculator/jknjjmc10r
 
