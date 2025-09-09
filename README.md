@@ -5,16 +5,14 @@ See releases for "Lost in files" master tarball
 # Contestants
 ## OCaml
 ![OCaml picture](pictures/ocaml.png)
-Submitted by: @nigelwithrow
-
-Homepage: https://ocaml.org/
-
+Submitted by: <https://www.github.com/nigelwithrow> \
+Homepage: https://ocaml.org/ \
 Tools Available: ocamlc (native compiler), ocaml (bytecode interpreter) , js_of_ocaml (javascript compiler), opam (package manager), dune (build system)
 
-Why its the best scripting language:
-The design of ocaml lends a lot of support for interactive & incremental programming, including:
-Top-down evaluation
-Static typing without explicit type annotation, most everything can be inferred
+Why its the best scripting language: \
+The design of ocaml lends a lot of support for interactive & incremental programming, including: \
+Top-down evaluation \
+Static typing without explicit type annotation, most everything can be inferred \
 Type information visible in the REPL (both the bytecoder interpreter and the enhanced repl 'utop')
 
 ```ocaml
@@ -29,17 +27,14 @@ print_endline "Hello, World"
 
 ## Typescript
 ![TypeScript picture](pictures/typescript.png)
-Submitted by: @grngxd
-
-Solutions by: @nigelwithrow and @InfiniteCoder01
-
-Homepage: https://typescriptlang.org/
-
+Submitted by: <https://www.github.com/grngxd> \
+Solutions by: <https://www.github.com/nigelwithrow> and <https://www.github.com/InfiniteCoder01> \
+Homepage: https://typescriptlang.org/ \
 Docs: https://www.typescriptlang.org/docs/
 
 Toolset: node (nodejs runtime) npm (node package manager) npx (npm eXecute)
 
-pnpm (performant npm [up to 2x faster]) pnpx (performant npm eXecute)
+pnpm (performant npm [up to 2x faster]) pnpx (performant npm eXecute) \
 yarn alternative package manager for node
 
 tsx typescript eXecute tsc typescript compiler
@@ -60,14 +55,10 @@ console.log("Hello, World!")
 
 ## BASH
 ![BASH picture](pictures/bash.png)
-Submitted by: @cgsdev0
-
-Solutions by: @InfiniteCoder01
-
-language: bash
-
-homepage: https://www.gnu.org/software/bash/
-
+Submitted by: <https://www.github.com/cgsdev0> \
+Solutions by: <https://www.github.com/InfiniteCoder01> \
+language: bash \
+homepage: https://www.gnu.org/software/bash/ \
 manual: https://www.youtube.com/watch?v=7taNCDMpPvc
 
 ```bash
@@ -82,10 +73,8 @@ printf 'hello world\n'
 
 ## The C programming language
 ![C language picture](pictures/the-c-programming-language.png)
-Submitted by: @InfiniteCoder01
-
-Homepage: https://www.c-language.org/
-
+Submitted by: <https://www.github.com/InfiniteCoder01> \
+Homepage: https://www.c-language.org/ \
 Tools Available: TCC, GCC, clang (and clangd), Emscripten, picoc and many others
 
 This is an odd choice. But it shows that you can push the boundaries.
@@ -109,12 +98,9 @@ int main(int argc, char **argv) {
 
 ## Ruby
 ![Ruby picture](pictures/ruby.png)
-Submitted by: @penguin-operator
-
-Homepage: https://ruby-lang.org/
-
-Docs: https://docs.ruby-lang.org/en/3.3/
-
+Submitted by: <https://www.github.com/penguin-operator> \
+Homepage: https://ruby-lang.org/ \
+Docs: https://docs.ruby-lang.org/en/3.3/ \
 Toolset: ruby (interpreter) , gem (packagemanager)
 
 Short and elegant
