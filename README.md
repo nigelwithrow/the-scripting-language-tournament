@@ -98,14 +98,7 @@ int main(int argc, char **argv) {
 
 ## Ruby
 ![Ruby picture](pictures/ruby.png)
-Submitted by: [repl/hot reloader, but it is such a simple and old language, that there are tools written for literally anything. It also is the first language to run on basically any hardware. -3 more for being platform-dependent, because cross-platform code becomes more complex than if you don't care about platform)
-2. Ecosystem - 7/10 (well-known language, has A LOT of libraries, but it is missing an official implementation. Sure, most popular compilers are similar, but it is still a pretty big problem. It also has similar problems with package management)
-3. Average development time - 5/10 (it is a very simple language, when writing it you probably won't have issues figuring out code architecture. And it has a lot of premade libraries. But lack of proper package manager/build system and a singular toolchain, together with inability to write cross-platform code easily and having segfaults and UB can make complex projects take a lot of extra time. If you use it a lot, you will get used to it and you will be able to cut devtime drastically, but for a scripting language, it is an issue)
-
-
-## Ruby
-![Ruby picture](pictures/ruby.png)
-Submitted by: []<https://www.github.com/penguin-operator](https://www.github.com/penguin-operator) \
+Submitted by: [penguin-operator](https://www.github.com/penguin-operator) \
 Homepage: https://ruby-lang.org/ \
 Docs: https://docs.ruby-lang.org/en/3.3/ \
 Toolset: ruby (interpreter) , gem (packagemanager)
