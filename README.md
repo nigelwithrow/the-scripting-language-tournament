@@ -82,7 +82,7 @@ This is an odd choice. But it shows that you can push the boundaries.
 C is fast tho 🙂
 
 ```c
-#include []<stdio.h>
+#include <stdio.h>
 
 int main(int argc, char **argv) {
   printf("Hello, World!\n");
