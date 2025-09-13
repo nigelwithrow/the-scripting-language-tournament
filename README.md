@@ -115,3 +115,18 @@ puts "hello world!"
 3. Average development time - 9/10 (Short and elegant indeed, however pretty old (legacy) and lacks a little bit of safety features)
 
 Those are very high scores! 
+
+# Results
+Using the following formulas
+```py
+language_score = portability_score + ecosystem_score + avg_dev_time_score # Max: 3
+final_score = language_score + sum(challenge_scores[i] for i in range(5)) # Max: 8
+```
+Theese are the final scores of the tournament:
+|  Language  | Language score |  #1  |  #2  |  #3  |  #4  |  #5  | **Result** |
+| ---------- | -------------- | ---- | ---- | ---- | ---- | ---- | ---------- |
+| OCaml      |      2.40      | 0.93 | 0.53 | 0.26 | 0.68 | 0.65 |    5.45    |
+| TypeScript |      2.70      | 0.76 | 0.67 | 0.42 | 0.69 | 0.68 |    5.92    |
+| BASH       |      2.10      | 0.50 | 0.73 | 0.64 |  --  | 0.81 |    4.78    |
+| C          |      1.80      | 0.93 | 0.67 | 0.53 | 0.78 | 0.84 |    5.55    |
+| Ruby       |      2.75      | 0.87 | 0.39 | 0.70 | 0.83 | 0.84 |    6.38    |
